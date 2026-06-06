@@ -1,3 +1,4 @@
+const { EmbedBuilder } = require('discord.js');
 const User = require('../models/User');
 const Server = require('../models/Server');
 const config = require('../../config.json');
@@ -163,27 +164,17 @@ async function handleLevelUp(message, user, oldLevel) {
     const progressData = getXpProgress(user.totalXp);
 
     // Send level up message
-    const levelUpEmbed = {
-      color: 0x00d4ff,
-      title: `🎉 Level Up!`,
-      description: `Congratulations ${message.author}! You have reached **Level ${user.level}**!`,
-      thumbnail: {
-        url: message.author.displayAvatarURL({ format: 'png', size: 512 }),
-      },
-      fields: [
-        {
-          name: '📊 Progress',
-          value: `Level ${oldLevel} → Level ${user.level}`,
-          inline: true,
-        },
-        {
-          name: '⭐ Total XP',
-          value: `${user.totalXp} XP`,
-          inline: true,
-        },
-      ],
-      timestamp: new Date(),
-    };
+    const levelUpEmbed = new EmbedBuilder()
+      .setColor('#FFD700')
+      .setAuthor({ name: '🎉 Level Up!', iconURL: message.author.displayAvatarURL() })
+      .setThumbnail(message.author.displayAvatarURL({ format: 'png', size: 512 }))
+      .setDescription(`> Congratulations ${message.author}!\n> You just advanced to **Level ${user.level}** 🌟`)
+      .addFields({
+        name: ' ',
+        value: `📊 **Progress:** \`Level ${oldLevel}\` ➔ **\`Level ${user.level}\`**\n💫 **Total XP:** \`${user.totalXp.toLocaleString()} XP\``,
+        inline: false,
+      })
+      .setTimestamp();
 
     // Send in dedicated channel or current channel
     if (config.levelUpSettings.dedicatedChannel) {
@@ -202,10 +193,9 @@ async function handleLevelUp(message, user, oldLevel) {
         const role = message.guild.roles.cache.get(roleRewardId);
         if (role && message.member) {
           await message.member.roles.add(role);
-          const roleRewardEmbed = {
-            color: 0x00d4ff,
-            description: `🏆 You have been awarded the **${role.name}** role!`,
-          };
+          const roleRewardEmbed = new EmbedBuilder()
+            .setColor('#FFD700')
+            .setDescription(`🏆 **Role Unlocked!**\n> You have been awarded the ${role.toString()} role!`);
           await message.reply({ embeds: [roleRewardEmbed] });
         }
       } catch (error) {
