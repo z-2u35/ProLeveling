@@ -1,0 +1,27 @@
+{
+  "roleRewards": {
+    "5": "ROLE_ID_FOR_LEVEL_5",
+    "10": "ROLE_ID_FOR_LEVEL_10",
+    "15": "ROLE_ID_FOR_LEVEL_15",
+    "20": "ROLE_ID_FOR_LEVEL_20",
+    "25": "ROLE_ID_FOR_LEVEL_25"
+  },
+  "blacklistedChannels": [
+    "CHANNEL_ID_1",
+    "CHANNEL_ID_2"
+  ],
+  "blacklistedRoles": [
+    "ROLE_ID_1",
+    "ROLE_ID_2"
+  ],
+  "levelUpSettings": {
+    "sendInChannel": true,
+    "dedicatedChannel": null
+  },
+  "xpSettings": {
+    "textMessageMin": 15,
+    "textMessageMax": 25,
+    "textMessageCooldown": 60000,
+    "voiceXpPerMinute": 5
+  }
+}
