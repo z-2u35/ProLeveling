@@ -33,9 +33,9 @@ module.exports = {
       const message = interaction.options.getString('message');
 
       const announcementEmbed = new EmbedBuilder()
-        .setColor('#00d4ff')
-        .setTitle(`📢 ${title}`)
-        .setDescription(message)
+        .setColor('#FFD700')
+        .setTitle(`📢 **${title}**`)
+        .setDescription(`\n${message}\n`)
         .setAuthor({
           name: interaction.user.username,
           iconURL: interaction.user.displayAvatarURL(),
@@ -45,20 +45,8 @@ module.exports = {
       await channel.send({ embeds: [announcementEmbed] });
 
       const confirmEmbed = new EmbedBuilder()
-        .setColor('#00ff00')
-        .setTitle('✅ Announcement Sent')
-        .addFields(
-          {
-            name: 'Channel',
-            value: channel.toString(),
-            inline: true,
-          },
-          {
-            name: 'Title',
-            value: title,
-            inline: true,
-          }
-        );
+        .setColor('#2b2d31')
+        .setDescription(`✅ **Announcement sent successfully to ${channel.toString()}**\n> **Title:** ${title}`);
 
       await interaction.editReply({ embeds: [confirmEmbed] });
     } catch (error) {
@@ -66,8 +54,8 @@ module.exports = {
       await interaction.editReply({
         embeds: [
           new EmbedBuilder()
-            .setColor('#ff0000')
-            .setDescription('❌ An error occurred!'),
+            .setColor('#2b2d31')
+            .setDescription('⚠️ **An error occurred while sending the announcement!**'),
         ],
       });
     }

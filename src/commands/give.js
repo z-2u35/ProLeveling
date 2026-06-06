@@ -32,8 +32,8 @@ module.exports = {
         return interaction.editReply({
           embeds: [
             new EmbedBuilder()
-              .setColor('#ff0000')
-              .setDescription('❌ Only admins can use this command!'),
+              .setColor('#2b2d31')
+              .setDescription('⛔ **Only admins can use this command!**'),
           ],
         });
       }
@@ -46,8 +46,8 @@ module.exports = {
         return interaction.editReply({
           embeds: [
             new EmbedBuilder()
-              .setColor('#ff0000')
-              .setDescription('❌ Cannot give XP to bots!'),
+              .setColor('#2b2d31')
+              .setDescription('🤖 **Cannot give XP to bots!**'),
           ],
         });
       }
@@ -85,23 +85,13 @@ module.exports = {
 
       // Build response embed
       const giveEmbed = new EmbedBuilder()
-        .setColor('#00d4ff')
-        .setTitle('✅ XP Given Successfully')
+        .setColor('#FFD700')
+        .setAuthor({ name: '✨ XP Granted Successfully', iconURL: interaction.user.displayAvatarURL() })
         .setThumbnail(targetUser.displayAvatarURL({ format: 'png', size: 512 }))
         .addFields(
           {
-            name: '👤 User',
-            value: targetUser.toString(),
-            inline: true,
-          },
-          {
-            name: '➕ XP Given',
-            value: `+${xpAmount} XP`,
-            inline: true,
-          },
-          {
-            name: '📊 Total XP',
-            value: `${oldTotalXp} → **${user.totalXp}** XP`,
+            name: ' ',
+            value: `> 👤 **User:** ${targetUser.toString()}\n> ➕ **XP Given:** \`+${xpAmount.toLocaleString()} XP\`\n> 📊 **Total:** \`${oldTotalXp.toLocaleString()}\` ➔ **\`${user.totalXp.toLocaleString()}\` XP**`,
             inline: false,
           }
         );
@@ -111,13 +101,8 @@ module.exports = {
         giveEmbed.addFields(
           {
             name: '🎉 Level Up!',
-            value: `Level ${oldLevel} → **Level ${user.level}**`,
+            value: `> Level \`${oldLevel}\` ➔ **Level \`${user.level}\`**`,
             inline: false,
-          },
-          {
-            name: '⭐ New Rank',
-            value: `Level ${user.level} reached!`,
-            inline: true,
           }
         );
 
@@ -131,7 +116,7 @@ module.exports = {
               await member.roles.add(role);
               giveEmbed.addFields({
                 name: '🏆 Role Reward',
-                value: `Awarded: ${role.name}`,
+                value: `> Awarded: ${role.toString()}`,
                 inline: true,
               });
             }
@@ -142,21 +127,15 @@ module.exports = {
       } else {
         giveEmbed.addFields(
           {
-            name: '📈 Level',
-            value: `Level ${user.level}`,
-            inline: true,
-          },
-          {
-            name: '🎯 Progress',
-            value: `${progressData.currentXp} / ${progressData.xpForNextLevel - progressData.xpForCurrentLevel} XP`,
-            inline: true,
+            name: '🎯 Progress to Next Level',
+            value: `> \`${progressData.currentXp.toLocaleString()}\` / \`${(progressData.xpForNextLevel - progressData.xpForCurrentLevel).toLocaleString()} XP\``,
+            inline: false,
           }
         );
       }
 
       giveEmbed.setFooter({
-        text: `Given by ${interaction.user.username}`,
-        iconURL: interaction.user.displayAvatarURL(),
+        text: `Command executed by ${interaction.user.username}`,
       });
 
       await interaction.editReply({
@@ -167,8 +146,8 @@ module.exports = {
       await interaction.editReply({
         embeds: [
           new EmbedBuilder()
-            .setColor('#ff0000')
-            .setDescription('❌ An error occurred while giving XP!'),
+            .setColor('#2b2d31')
+            .setDescription('⚠️ **An error occurred while giving XP!**'),
         ],
       });
     }

@@ -81,8 +81,8 @@ module.exports = {
       await interaction.editReply({
         embeds: [
           new EmbedBuilder()
-            .setColor('#ff0000')
-            .setDescription('❌ An error occurred while generating the rank card!'),
+            .setColor('#2b2d31')
+            .setDescription('⚠️ **An error occurred while generating the rank card!**'),
         ],
       });
     }
