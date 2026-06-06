@@ -11,6 +11,17 @@ const serverSchema = new mongoose.Schema(
       type: String,
       default: 'Unknown Guild',
     },
+    // Level Up Message Settings
+    levelUpMessage: {
+      enabled: {
+        type: Boolean,
+        default: false,
+      },
+      channelId: {
+        type: String,
+        default: null,
+      },
+    },
     // Autorole Settings
     autorole: {
       enabled: {

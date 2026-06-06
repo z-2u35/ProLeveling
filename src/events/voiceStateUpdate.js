@@ -103,18 +103,26 @@ module.exports = {
 
             // Check for level up (optional notification in voice channels)
             if (user.level > oldLevel) {
-              const textChannel = guild.channels.cache
-                .filter((ch) => ch.isTextBased())
-                .first();
+              const Server = require('../models/Server');
+              const server = await Server.findOne({ guildId: guild.id });
+              let targetChannel = null;
+              
+              if (server && server.levelUpMessage && server.levelUpMessage.enabled && server.levelUpMessage.channelId) {
+                targetChannel = guild.channels.cache.get(server.levelUpMessage.channelId);
+              } else if (config.levelUpSettings.dedicatedChannel) {
+                targetChannel = guild.channels.cache.get(config.levelUpSettings.dedicatedChannel);
+              }
+              
+              if (!targetChannel) targetChannel = guild.channels.cache.filter((ch) => ch.isTextBased()).first();
 
-              if (textChannel) {
+              if (targetChannel) {
                 const member_obj = await guild.members.fetch(user.userId);
                 const levelUpEmbed = {
-                  color: 0x00d4ff,
+                  color: 0xFFD700,
                   description: `🎉 ${member_obj} reached **Level ${user.level}**! (Voice XP)`,
                   timestamp: new Date(),
                 };
-                await textChannel.send({ embeds: [levelUpEmbed] });
+                await targetChannel.send({ embeds: [levelUpEmbed] });
               }
             }
           } else {

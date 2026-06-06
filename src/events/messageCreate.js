@@ -176,14 +176,28 @@ async function handleLevelUp(message, user, oldLevel) {
       })
       .setTimestamp();
 
-    // Send in dedicated channel or current channel
-    if (config.levelUpSettings.dedicatedChannel) {
-      const channel = message.guild.channels.cache.get(config.levelUpSettings.dedicatedChannel);
-      if (channel) {
-        await channel.send({ embeds: [levelUpEmbed] });
+    let messageSent = false;
+    
+    // Check database settings first
+    const server = await Server.findOne({ guildId: message.guildId });
+    if (server && server.levelUpMessage && server.levelUpMessage.enabled && server.levelUpMessage.channelId) {
+      const targetChannel = message.guild.channels.cache.get(server.levelUpMessage.channelId);
+      if (targetChannel) {
+        await targetChannel.send({ content: `${message.author}`, embeds: [levelUpEmbed] });
+        messageSent = true;
       }
-    } else if (config.levelUpSettings.sendInChannel) {
-      await message.reply({ embeds: [levelUpEmbed] });
+    }
+
+    // Fallback to config settings if database not configured
+    if (!messageSent) {
+      if (config.levelUpSettings.dedicatedChannel) {
+        const channel = message.guild.channels.cache.get(config.levelUpSettings.dedicatedChannel);
+        if (channel) {
+          await channel.send({ content: `${message.author}`, embeds: [levelUpEmbed] });
+        }
+      } else if (config.levelUpSettings.sendInChannel) {
+        await message.reply({ embeds: [levelUpEmbed] });
+      }
     }
 
     // Check and assign role rewards
