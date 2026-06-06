@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, APIEmbedField } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder } = require('discord.js');
 const User = require('../models/User');
 
 module.exports = {
@@ -19,37 +19,53 @@ module.exports = {
         return interaction.editReply({
           embeds: [
             new EmbedBuilder()
-              .setColor('#ffaa00')
-              .setDescription('📊 No users have earned XP yet!'),
+              .setColor('#2b2d31')
+              .setDescription('✨ **No users have earned XP yet!**\n> Start chatting to be the first!'),
           ],
         });
       }
 
-      // Build leaderboard embed
+      // Build leaderboard embed with better formatting
       const leaderboardEmbed = new EmbedBuilder()
-        .setColor('#00d4ff')
-        .setTitle('🏆 Server Leaderboard')
-        .setDescription('Top 10 users by total XP')
+        .setColor('#FFD700') // Premium Gold Look
+        .setTitle('🏆 **Global Leaderboard**')
+        .setDescription(`*Top most active members in **${interaction.guild.name}***\n`)
+        .setThumbnail(interaction.guild.iconURL({ dynamic: true, size: 512 }))
         .setFooter({
-          text: `Guild: ${interaction.guild.name}`,
-          iconURL: interaction.guild.iconURL(),
+          text: `Requested by ${interaction.user.username}`,
+          iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
         })
         .setTimestamp();
 
-      // Add fields for each user
-      const fields = [];
-      topUsers.forEach((user, index) => {
-        const medal = ['🥇', '🥈', '🥉'];
-        const icon = medal[index] || `${index + 1}.`;
+      // Create formatted leaderboard string
+      let leaderboardText = '';
 
-        fields.push({
-          name: `${icon} ${user.username}`,
-          value: `Level: **${user.level}** | XP: **${user.totalXp}**`,
-          inline: false,
-        });
+      topUsers.forEach((user, index) => {
+        const medals = ['🥇', '🥈', '🥉'];
+        const medal = medals[index] || `\` #${index + 1} \``;
+        const username = user.username.length > 15 ? user.username.substring(0, 15) + '...' : user.username;
+        const xp = user.totalXp.toLocaleString();
+
+        leaderboardText += `${medal} **${username}**\n`;
+        leaderboardText += `> 💠 **Level ${user.level}** • 💫 \`${xp} XP\`\n\n`;
       });
 
-      leaderboardEmbed.addFields(fields);
+      leaderboardEmbed.addFields(
+        {
+          name: ' ',
+          value: leaderboardText,
+          inline: false,
+        }
+      );
+
+      // Add stats bar
+      const totalXp = topUsers.reduce((sum, user) => sum + user.totalXp, 0);
+
+      leaderboardEmbed.addFields({
+        name: ' ',
+        value: `📊 **Server Stats**\n> Total XP (Top 10): \`${totalXp.toLocaleString()} XP\`\n> *Use \`/rank\` to check your own stats!*`,
+        inline: false,
+      });
 
       await interaction.editReply({
         embeds: [leaderboardEmbed],
